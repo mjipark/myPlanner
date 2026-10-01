@@ -2,6 +2,13 @@
 
 October 2026 exam planner: VR assignment, 디지털회로 quiz, six midterms and ADsP 51회.
 
-Open `index.html` (or the GitHub Pages link). Switch between **List** and **Calendar** (Notion-style month grid). Click **Desktop widget** for a compact today-only checklist you can keep in a small window. Checkmarks are saved in your browser's local storage.
+Three tabs (top bar on desktop, bottom bar on phones):
 
-To use it as a desktop app: open the Pages link in Chrome → ⋮ → Cast, save, and share → Install page as app.
+- **Today** – compact checklist for one day, with the next deadline countdown
+- **Checklist** – the full plan, week by week
+- **Calendar** – Notion-style month grid; tap a day to see and tick its tasks
+
+All three share the same checkmarks. On this GitHub Pages copy they are saved in your browser's local storage, so each device keeps its own ticks.
+
+Desktop: open the Pages link in Chrome → ⋮ → Cast, save, and share → Install page as app.
+iPhone: open in Safari → Share → Add to Home Screen.

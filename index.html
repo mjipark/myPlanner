@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Planner">
 <title>10월 시험 플래너</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -64,7 +67,7 @@ footer{font-size:.8rem;color:var(--muted)}
 /* ---- widget mode ---- */
 #widget{display:none}
 body.wmode .wrap{max-width:440px;padding-block:12px 16px;gap:10px}
-body.wmode .wrap > :not(#widget){display:none}
+body.wmode .wrap > :not(#widget):not(.tabs){display:none}
 body.wmode #widget{display:flex;flex-direction:column;gap:10px}
 .w-head{display:flex;align-items:center;gap:6px}
 .w-date{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;line-height:1.2}
@@ -84,12 +87,27 @@ body.wmode #widget{display:flex;flex-direction:column;gap:10px}
 .w-foot .sync{margin-left:auto}
 .w-done{font-size:.8rem;color:var(--accent);font-weight:700}
 
-/* ---- view switch + calendar ---- */
+/* ---- tab bar: top on desktop, fixed bottom bar on phones ---- */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;max-width:440px;width:100%;align-self:center;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.tabs button{border:0;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;font-weight:500;color:var(--muted);background:transparent}
+.tabs button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tabs button svg .dot{fill:currentColor;stroke:none}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--surface)}
+@media (max-width:640px){
+  .wrap{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  body.wmode .wrap{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .tabs{position:fixed;left:0;right:0;bottom:0;top:auto;max-width:none;border-radius:0;border-width:1px 0 0;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 12px rgba(0,0,0,.06)}
+  .tabs button{flex-direction:column;gap:2px;font-size:.72rem;padding:6px 4px}
+  .tabs button svg{width:22px;height:22px}
+  .tabs button[aria-selected="true"]{background:transparent;color:var(--accent)}
+}
+
+/* ---- calendar ---- */
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
 .seg button{border:0;border-radius:0;padding:6px 12px}
 .seg button + button{border-left:1px solid var(--line)}
 .seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
-body.cview .listonly{display:none}
+body.cview .listonly,body.cview #ms,body.cview header .sub{display:none}
 body.cview:not(.wmode) .wrap{max-width:1200px}
 body:not(.cview) #cal{display:none}
 #cal{display:flex;flex-direction:column;gap:10px}
@@ -149,9 +167,14 @@ body:not(.cview) #cal{display:none}
 <body>
 
 <div class="wrap">
+  <nav class="tabs" role="tablist" aria-label="Planner views">
+    <button id="tToday" role="tab" type="button" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><circle cx="12" cy="15" r="1.6" class="dot"/></svg><span>Today</span></button>
+    <button id="tList" role="tab" type="button" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9"/></svg><span>Checklist</span></button>
+    <button id="tCal" role="tab" type="button" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8 14h2M14 14h2M8 17h2M14 17h2"/></svg><span>Calendar</span></button>
+  </nav>
   <header>
     <h1>10월 시험 플래너</h1>
-    <p class="sub">9/30 – 10/31 · VR assignment, 디지털회로 quiz, 6 midterms, ADsP 51회. Tick items as you go; progress syncs across your devices.</p>
+    <p class="sub">9/30 – 10/31 · VR assignment, 디지털회로 quiz, 6 midterms, ADsP 51회. Tick items as you go; progress is saved in this browser.</p>
   </header>
 
   <section class="milestones" id="ms" aria-label="Key dates"></section>
@@ -162,11 +185,6 @@ body:not(.cview) #cal{display:none}
   </section>
 
   <div class="toolbar">
-    <div class="seg" role="group" aria-label="View">
-      <button id="vList" type="button" aria-pressed="true">List</button>
-      <button id="vCal" type="button" aria-pressed="false">Calendar</button>
-    </div>
-    <button id="toWidget" class="primary" type="button">Desktop widget</button>
     <button id="jump" class="listonly" type="button">Jump to today</button>
     <button id="hidePast" class="listonly" type="button">Hide past days</button>
     <span class="sync" id="sync">Loading your progress…</span>
@@ -202,7 +220,6 @@ body:not(.cview) #cal{display:none}
     <div class="w-card" id="wList"></div>
     <div class="w-foot">
       <button id="wToday" type="button">Today</button>
-      <button id="toFull" type="button">Full planner</button>
       <span class="sync" id="wSync"></span>
     </div>
   </section>
@@ -263,9 +280,7 @@ const diff=(a,b)=>Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/8
 const md=d=>`${+d.slice(5,7)}/${+d.slice(8)}`;
 
 let checks={}; let hidePast=false; let wmode=false;
-try{hidePast=localStorage.getItem("hidePast")==="1"; wmode=localStorage.getItem("wmode")==="1"}catch(e){}
-if(location.hash==="#widget") wmode=true;
-if(location.hash==="#full") wmode=false;
+try{hidePast=localStorage.getItem("hidePast")==="1"}catch(e){}
 
 function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
 function fixedLine(date){
@@ -351,7 +366,6 @@ const BYDATE=Object.fromEntries(D.map(x=>[x[0],x]));
 let calMonth=MONTHS.includes(TODAY.slice(0,7))?TODAY.slice(0,7):"2026-10";
 let selDay=clampDay(TODAY);
 let view="list";
-try{view=localStorage.getItem("view")==="cal"?"cal":"list"}catch(e){}
 
 function renderCal(){
   const [y,m]=calMonth.split("-").map(Number);
@@ -401,17 +415,16 @@ function renderCalDetail(){
   el.innerHTML=head+(fixed?`<div class="fixed">${esc(fixed)}</div>`:"")+(note?`<div class="note">${esc(note)}</div>`:"")+orderIdx(date,items).map(i=>itemHTML(date,items[i],i,"x")).join("");
 }
 function selectDay(d){selDay=d; if(d.slice(0,7)!==calMonth&&MONTHS.includes(d.slice(0,7))) calMonth=d.slice(0,7); renderCal()}
-function setView(v){
-  view=v; document.body.classList.toggle("cview",v==="cal");
-  document.getElementById("vList").setAttribute("aria-pressed",v==="list");
-  document.getElementById("vCal").setAttribute("aria-pressed",v==="cal");
-  try{localStorage.setItem("view",v)}catch(e){}
-}
-
-function setMode(w){
-  wmode=w; document.body.classList.toggle("wmode",w);
-  try{localStorage.setItem("wmode",w?"1":"0")}catch(e){}
-  if(w){wDay=clampDay(TODAY); renderWidget(); window.scrollTo(0,0)}
+let tab="list";
+function setTab(t,scroll){
+  tab=t; wmode=t==="today"; view=t==="cal"?"cal":"list";
+  document.body.classList.toggle("wmode",wmode);
+  document.body.classList.toggle("cview",t==="cal");
+  [["tToday","today"],["tList","list"],["tCal","cal"]].forEach(([id,v])=>document.getElementById(id).setAttribute("aria-selected",t===v));
+  try{localStorage.setItem("tab",t)}catch(e){}
+  if(wmode){wDay=clampDay(TODAY); renderWidget()}
+  if(t==="cal") renderCal();
+  if(scroll!==false) window.scrollTo(0,0);
 }
 
 /* ---- storage: db (syncs across devices) with localStorage fallback ---- */
@@ -439,19 +452,19 @@ document.getElementById("jump").addEventListener("click",()=>{
   if(el) el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 });
 document.getElementById("hidePast").addEventListener("click",()=>{hidePast=!hidePast; try{localStorage.setItem("hidePast",hidePast?"1":"0")}catch(e){} render()});
-document.getElementById("toWidget").addEventListener("click",()=>setMode(true));
-document.getElementById("toFull").addEventListener("click",()=>setMode(false));
 document.getElementById("wPrev").addEventListener("click",()=>shift(-1));
 document.getElementById("wNext").addEventListener("click",()=>shift(1));
 document.getElementById("wToday").addEventListener("click",()=>{wDay=clampDay(TODAY); renderWidget()});
-document.getElementById("vList").addEventListener("click",()=>setView("list"));
-document.getElementById("vCal").addEventListener("click",()=>setView("cal"));
+document.getElementById("tToday").addEventListener("click",()=>setTab("today"));
+document.getElementById("tList").addEventListener("click",()=>setTab("list"));
+document.getElementById("tCal").addEventListener("click",()=>setTab("cal"));
 document.getElementById("cPrev").addEventListener("click",()=>{const i=MONTHS.indexOf(calMonth); if(i>0){calMonth=MONTHS[i-1]; renderCal()}});
 document.getElementById("cNext").addEventListener("click",()=>{const i=MONTHS.indexOf(calMonth); if(i<MONTHS.length-1){calMonth=MONTHS[i+1]; renderCal()}});
 document.getElementById("cToday").addEventListener("click",()=>selectDay(TODAY));
 document.getElementById("calGrid").addEventListener("click",e=>{
   if(e.target.closest(".cchip")) return;
-  const t=e.target.closest("[data-day]"); if(t) selectDay(t.dataset.day);
+  const t=e.target.closest("[data-day]"); if(!t) return; selectDay(t.dataset.day);
+  if(matchMedia("(max-width:640px)").matches) document.getElementById("calDetail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});
 });
 document.getElementById("calGrid").addEventListener("keydown",e=>{
   const t=e.target.closest(".cbg"); if(t&&(e.key==="Enter"||e.key===" ")){e.preventDefault(); selectDay(t.dataset.day)}
@@ -461,7 +474,10 @@ document.addEventListener("keydown",e=>{if(!wmode||e.target.tagName==="INPUT"&&e
 /* roll over at midnight (Seoul) so the widget always shows today */
 setInterval(()=>{const t=seoulToday(); if(t!==TODAY){const wasToday=wDay===clampDay(TODAY); TODAY=t; if(wasToday) wDay=clampDay(TODAY); renderMilestones(); render()}},60000);
 
-loadLocal(); renderMilestones(); setView(view); render(); setMode(wmode);
+let startTab="list";
+try{const s=localStorage.getItem("tab"); if(s==="today"||s==="list"||s==="cal") startTab=s; else if(localStorage.getItem("wmode")==="1") startTab="today"; else if(localStorage.getItem("view")==="cal") startTab="cal"}catch(e){}
+const H={"#today":"today","#widget":"today","#checklist":"list","#list":"list","#full":"list","#calendar":"cal"}; if(H[location.hash]) startTab=H[location.hash];
+loadLocal(); renderMilestones(); render(); setTab(startTab,false);
 
 (async()=>{
   const cl=window.claude; if(!cl||!cl.use){setSync("Saved in this browser"); return}

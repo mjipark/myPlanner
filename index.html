@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>10월 시험 플래너</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column of week sections; each day is a row with a date rail on the left and time blocks on the right. Widget mode: a single compact day card for a small desktop window. Subject colours mirror the timetable app. */
+:root{
+  --bg:#f6f7f5; --surface:#ffffff; --fg:#1d2320; --muted:#68716c; --line:#e1e5e1; --accent:#2f6f5e; --today:#e9f3ee;
+  --vr:#e8893f; --dc:#d7a52c; --comp:#8a6fd6; --dl:#3fae9b; --rec:#5d8fe0; --ds:#df6c5c; --adsp:#3c4a45; --work:#79a84a; --aice:#b0558c; --misc:#8a938e;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121614; --surface:#1a1f1d; --fg:#e7ece9; --muted:#9aa49f; --line:#2b3330; --accent:#7cc7ae; --today:#1d2d27; --adsp:#a9bbb4; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121614; --surface:#1a1f1d; --fg:#e7ece9; --muted:#9aa49f; --line:#2b3330; --accent:#7cc7ae; --today:#1d2d27; --adsp:#a9bbb4; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+h1{font-size:1.7rem;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:4px 0 0}
+.milestones{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ms{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;border-left:4px solid var(--c)}
+.ms .d{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.ms .n{font-weight:700;font-size:.92rem}
+.ms .cd{font-family:var(--mono);font-size:.8rem;color:var(--c);font-weight:500}
+.ms.past{opacity:.5}
+.bar{display:flex;flex-direction:column;gap:6px}
+.bar .row{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+.track{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.fill{height:100%;background:var(--accent);width:0;transition:width .3s}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sync{font-size:.78rem;color:var(--muted);margin-left:auto}
+.week h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px;font-weight:500}
+.week h2 b{color:var(--fg);font-weight:700;text-transform:none;letter-spacing:0;font-size:.95rem;margin-right:8px}
+.days{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.day{display:grid;grid-template-columns:78px 1fr;gap:14px;padding:14px 16px;border-top:1px solid var(--line)}
+.day:first-child{border-top:0}
+.day.today{background:var(--today)}
+.day.past .blocks{opacity:.55}
+.rail{display:flex;flex-direction:column;gap:2px}
+.rail .date{font-family:var(--mono);font-size:1.05rem;font-weight:500}
+.rail .dow{font-size:.8rem;color:var(--muted)}
+.rail .tag{font-size:.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.blocks{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fixed{font-size:.8rem;color:var(--muted)}
+.note{font-size:.82rem;background:var(--bg);border-radius:6px;padding:4px 8px;color:var(--fg)}
+label.item{display:grid;grid-template-columns:20px 92px 1fr;gap:8px;align-items:start;cursor:pointer}
+label.item input{margin:3px 0 0;width:16px;height:16px;accent-color:var(--accent)}
+.time{font-family:var(--mono);font-size:.78rem;color:var(--muted);padding-top:2px}
+.what{min-width:0}
+.chip{display:inline-block;font-size:.7rem;font-weight:700;color:#fff;background:var(--c);border-radius:4px;padding:0 6px;margin-right:6px;vertical-align:1px}
+.item.exam .what{font-weight:700}
+.item input:checked ~ .what{text-decoration:line-through;color:var(--muted)}
+footer{font-size:.8rem;color:var(--muted)}
+
+/* ---- widget mode ---- */
+#widget{display:none}
+body.wmode .wrap{max-width:440px;padding-block:12px 16px;gap:10px}
+body.wmode .wrap > :not(#widget){display:none}
+body.wmode #widget{display:flex;flex-direction:column;gap:10px}
+.w-head{display:flex;align-items:center;gap:6px}
+.w-date{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.w-date .big{font-family:var(--mono);font-size:1.25rem;font-weight:500}
+.w-date .small{font-size:.75rem;color:var(--muted)}
+.w-date .small b{color:var(--accent)}
+.icon{width:32px;height:32px;padding:0;display:grid;place-items:center;font-size:1rem;flex:none}
+.w-next{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.8rem;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:8px;padding:6px 10px}
+.w-next .cd{font-family:var(--mono);color:var(--c);font-weight:500;white-space:nowrap}
+.w-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.w-card label.item{grid-template-columns:20px 1fr;row-gap:0}
+.w-card label.item .time{grid-column:2;padding-top:0;font-size:.72rem}
+.w-card label.item .what{grid-column:2;font-size:.9rem}
+.w-card label.item input{grid-row:span 2}
+.w-empty{color:var(--muted);font-size:.85rem}
+.w-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.w-foot .sync{margin-left:auto}
+.w-done{font-size:.8rem;color:var(--accent);font-weight:700}
+
+@media (max-width:520px){
+  .day{grid-template-columns:1fr;gap:6px}
+  .rail{flex-direction:row;gap:8px;align-items:baseline}
+  label.item{grid-template-columns:20px 1fr}
+  .time{grid-column:2}
+  .what{grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>10월 시험 플래너</h1>
+    <p class="sub">9/30 – 10/31 · VR assignment, 디지털회로 quiz, 6 midterms, ADsP 51회. Tick items as you go; progress syncs across your devices.</p>
+  </header>
+
+  <section class="milestones" id="ms" aria-label="Key dates"></section>
+
+  <section class="bar" aria-label="Progress">
+    <div class="row"><span id="pLabel">0 of 0 tasks done</span><span id="pPct">0%</span></div>
+    <div class="track"><div class="fill" id="pFill"></div></div>
+  </section>
+
+  <div class="toolbar">
+    <button id="toWidget" class="primary" type="button">Desktop widget</button>
+    <button id="jump" type="button">Jump to today</button>
+    <button id="hidePast" type="button">Hide past days</button>
+    <span class="sync" id="sync">Loading your progress…</span>
+  </div>
+
+  <main id="weeks"></main>
+
+  <footer>Evening blocks assume roughly 19:00–22:00 on weekdays. Mon–Thu you leave around 09:30 (wake 07:30 for a morning block); Fri you leave 07:30–08:00, so no morning study. Every ADsP line is Part 3 unless it says otherwise, since that part caused the 과락 last time (20/60, cutoff 24). Confirm exam times with each professor, and check your ADsP 수험표 for the start time.</footer>
+
+  <section id="widget" aria-label="Today checklist">
+    <div class="w-head">
+      <button class="icon" id="wPrev" type="button" aria-label="Previous day">‹</button>
+      <div class="w-date"><span class="big" id="wDate"></span><span class="small" id="wSub"></span></div>
+      <button class="icon" id="wNext" type="button" aria-label="Next day">›</button>
+    </div>
+    <div class="w-next" id="wNextMs"></div>
+    <div class="bar">
+      <div class="row"><span id="wLabel"></span><span id="wPct"></span></div>
+      <div class="track"><div class="fill" id="wFill"></div></div>
+    </div>
+    <div class="w-card" id="wList"></div>
+    <div class="w-foot">
+      <button id="wToday" type="button">Today</button>
+      <button id="toFull" type="button">Full planner</button>
+      <span class="sync" id="wSync"></span>
+    </div>
+  </section>
+</div>
+
+<script>
+const C={VR:["가상현실","--vr"],DC:["디지털회로","--dc"],COMP:["컴파일러","--comp"],DL:["딥러닝","--dl"],REC:["추천시스템","--rec"],DS:["자료구조","--ds"],ADSP:["ADsP","--adsp"],WORK:["근로","--work"],AICE:["AICE","--aice"],GEN:["TODO","--misc"]};
+const TT={1:"자료구조 10:30 · 디지털회로 12:00 · 근로 14:00–17:00",2:"딥러닝 10:30 · 추천시스템 13:30 · 가상현실 15:00",3:"자료구조 10:30 · 디지털회로 12:00 · 컴파일러 15:00",4:"딥러닝 10:30 · 추천시스템 13:30 · 가상현실 15:00",5:"근로 09:00–12:00 · 컴파일러 15:00"};
+const HOLI={"2026-10-03":"개천절","2026-10-05":"대체공휴일","2026-10-09":"한글날"};
+const EXAMWEEK=d=>d>="2026-10-20"&&d<="2026-10-26";
+const MS=[["2026-10-02","ADsP registration closes 17:59","ADSP"],["2026-10-07","VR assignment due","VR"],["2026-10-12","디지털회로 quiz","DC"],["2026-10-20","가상현실 midterm","VR"],["2026-10-21","디지털회로 + 컴파일러","COMP"],["2026-10-22","딥러닝 + 추천시스템","DL"],["2026-10-26","자료구조 midterm","DS"],["2026-10-31","ADsP 51회","ADSP"]];
+// [date, focus label, note, [[time, subject, task, exam?]]]
+const D=[
+["2026-09-30","Start","Tired tonight: L02 p.21–34 and the VR spec moved to tomorrow. Lights out ~23:15.",[["Today","ADSP","Register for ADsP 51회 (Seoul center) if the site is open"],["Until 21:00","REC","L01 Introduction + L02 part 1 p.1–20 (quizzes: L01 9/10, L02 7/8)"],["Moved","VR","→ 10/1 commute: read the assignment spec, list every deliverable"],["~23:00–23:15","ADSP","Light pass only: confusion matrix formulas (accuracy, precision, recall, F1, specificity), then sleep"],["Moved","REC","→ 10/1 07:45: finish L02 part 1 (p.21–34)"]]],
+["2026-10-01","","Wake 07:30 · leave 09:30",[["Today","ADSP","ADsP registration: confirm it went through"],["11:45–13:15","DL","Start: weeks 1–2 slides"],["19:00–21:00","VR","Assignment: build the core"],["21:00–21:45","DS","Start: 자료구조 weeks 1–2"],["21:45–22:15","ADSP","10 confusion-matrix calculation problems"],["07:45–08:25","REC","Finish L02 part 1 p.21–34 (ML link, notation, data splits ⭐, validation, K-fold) + quiz"],["Commute","VR","Read the assignment spec, list every deliverable (from 9/30)"]]],
+["2026-10-02","","Registration deadline 17:59",[["12:00–13:30","VR","Assignment: continue the build"],["13:30–14:45","DC","Chapter practice problems"],["Before 17:59","ADSP","Last chance to register for ADsP 51회"],["19:00–20:30","REC","L02 Evaluation Metrics part 2 + L03 Memory-based part 1 (~70 slides)"],["20:30–21:00","ADSP","Association rules: 지지도, 신뢰도, 향상도 by hand"]]],
+["2026-10-03","Holiday","",[["10:00–13:00","VR","Assignment: main build session"],["14:00–16:00","VR","Assignment: finish features"],["16:30–18:00","DL","Weeks 3–4 slides"],["20:00–20:30","ADSP","Distance measures: Euclidean, Manhattan, standardized"]]],
+["2026-10-04","","",[["10:00–12:00","DC","Quiz-range practice problems"],["13:00–16:00","VR","Assignment: test, fix bugs, polish"],["16:30–18:00","DS","Weeks 3–4"],["20:00–20:30","ADSP","Probability and expected value problems"]]],
+["2026-10-05","Holiday","No class, no 근로",[["10:00–13:00","VR","Assignment: finish and write up"],["14:00–16:00","REC","L03 Memory-based part 2 + part 3 (~93 slides)"],["16:00–17:15","COMP","Review weeks 1–4 slides"],["17:15–18:15","DC","Practice problems"],["20:00–20:30","ADSP","Mixed calculation set #1"]]],
+["2026-10-06","","",[["11:45–13:15","DL","Catch up to the current lecture"],["19:00–21:00","VR","Final check. Submit tonight if you can."],["21:00–21:30","DC","Quiz-range formulas"],["21:30–22:00","ADSP","Mixed calculation set #2"]]],
+["2026-10-07","","VR assignment due",[["Deadline","VR","Submit VR assignment",1],["13:15–15:00","DC","Quiz prep: redo lecture examples"],["19:00–21:00","DC","Quiz prep: problem sets"],["21:00–21:30","ADSP","R output: how to read summary(lm)"]]],
+["2026-10-08","","",[["11:45–13:15","REC","Review this week's lectures"],["19:00–21:00","DC","Quiz prep: weak topics"],["21:00–21:30","ADSP","Regression coefficients, p-values, R², F-statistic"]]],
+["2026-10-09","Holiday","한글날 · no 근로",[["10:00–13:00","DC","Full quiz practice, timed"],["14:00–16:00","COMP","Slides and exercises"],["16:30–18:00","DS","Catch up to the current lecture"],["20:00–20:30","ADSP","Reading ANOVA tables"]]],
+["2026-10-10","","",[["10:00–12:00","DC","Fix mistakes from yesterday's practice"],["13:00–15:00","DL","Midterm-range first pass"],["15:30–17:00","REC","Midterm-range first pass"],["20:00–20:30","ADSP","t-test and chi-square output"]]],
+["2026-10-11","","",[["10:00–12:00","DC","Final quiz review: formula sheet + timed mock"],["13:00–15:00","COMP","Midterm-range first pass"],["15:30–17:00","VR","Midterm-range first pass"],["20:00–20:30","ADSP","Mixed R-output set"]]],
+["2026-10-12","","디지털회로 quiz in class",[["09:30–10:20","DC","Quick formula review before class"],["12:00","DC","디지털회로 quiz",1],["19:00–21:00","DS","Midterm-range review"],["21:00–21:30","ADSP","Hypothesis testing: 1종/2종 오류, p-value"]]],
+["2026-10-13","Midterm push","",[["11:45–13:15","DL","Midterm prep"],["19:00–21:00","COMP","Midterm prep: slides + exercises"],["21:00–21:30","ADSP","Sampling methods, Pearson vs Spearman"]]],
+["2026-10-14","","",[["13:15–15:00","DC","Midterm prep"],["19:00–21:00","DL","Midterm prep"],["21:00–21:30","ADSP","Time series: 정상성, AR / MA / ARIMA"]]],
+["2026-10-15","","",[["Today","AICE","Check November AICE Associate dates on aice.study and register"],["11:45–13:15","REC","Midterm prep"],["19:00–21:00","DC","Midterm practice problems"],["21:00–21:30","ADSP","PCA: scree plot, explained variance"]]],
+["2026-10-16","","",[["12:00–14:45","COMP","Midterm practice problems"],["19:00–21:00","REC","Midterm prep"],["21:00–21:30","ADSP","Decision trees: Gini, entropy, pruning"]]],
+["2026-10-17","","",[["10:00–12:30","COMP","Practice problems, timed"],["13:30–16:00","DC","Practice problems, timed"],["16:30–18:00","DL","Midterm prep"],["20:00–20:30","ADSP","Ensembles: bagging, boosting, random forest"]]],
+["2026-10-18","","",[["10:00–12:30","DL","Practice and past questions"],["13:30–15:30","REC","Practice and past questions"],["16:00–18:30","VR","Full midterm review"],["20:00–20:30","ADSP","Clustering: 계층적 연결법, k-means, SOM"]]],
+["2026-10-19","","Last day before exams. ADsP paused until 10/26.",[["09:00–10:20","VR","Summary sheet"],["13:15–14:00","VR","Weak spots"],["19:00–20:30","VR","Final review"],["20:30–22:00","DC","Light review: formula sheet"]]],
+["2026-10-20","Exam week","",[["Morning","VR","Last look at the summary sheet"],["15:00","VR","가상현실 midterm",1],["17:00–19:00","DC","Final review"],["20:00–22:00","COMP","Final review"]]],
+["2026-10-21","","Two exams",[["Morning","DC","Formula sheet + 2 practice problems"],["12:00","DC","디지털회로 midterm",1],["13:15–14:45","COMP","Last look"],["15:00","COMP","컴파일러 midterm",1],["18:00–20:00","DL","Final review"],["20:30–22:00","REC","Final review"]]],
+["2026-10-22","","Two exams",[["10:30","DL","딥러닝 midterm",1],["11:45–13:15","REC","Last look"],["13:30","REC","추천시스템 midterm",1],["Evening","GEN","Rest. Light 자료구조 skim only."]]],
+["2026-10-23","","",[["13:00–16:00","DS","Midterm prep"],["19:00–21:00","DS","Practice problems"]]],
+["2026-10-24","","",[["10:00–13:00","DS","Midterm-range review"],["14:00–17:00","DS","Practice problems and code tracing"]]],
+["2026-10-25","","",[["10:00–12:00","DS","Timed mock"],["13:00–15:00","DS","Fix weak topics"],["20:00–21:00","ADSP","Warm-up: flip through your Part 3 notes"]]],
+["2026-10-26","","Last midterm",[["10:30","DS","자료구조 midterm",1],["19:00–20:00","ADSP","Review Part 3 formula notes"]]],
+["2026-10-27","ADsP week","",[["11:45–13:15","ADSP","Formula recall: confusion matrix, association rules, distances"],["19:00–20:30","ADSP","기출 #1, timed (90 min)"],["20:30–22:00","ADSP","Review every wrong answer, start 오답노트"]]],
+["2026-10-28","","",[["13:15–15:00","ADSP","Drill the weakest topic from 기출 #1"],["19:00–20:30","ADSP","기출 #2, timed"],["20:30–22:00","ADSP","Review wrong answers"]]],
+["2026-10-29","","",[["11:45–13:15","ADSP","R-output interpretation drill"],["19:00–20:30","ADSP","기출 #3, timed"],["20:30–22:00","ADSP","Go through the 오답노트"]]],
+["2026-10-30","","Sleep early",[["12:00–14:45","ADSP","Part 1–2 key terms (quick pass)"],["19:00–20:30","ADSP","오답노트 + formula sheet one last time"],["Tonight","ADSP","Pack ID, 수험표, pens. Check the exam start time."]]],
+["2026-10-31","","",[["Morning","ADSP","Light formula review only"],["See 수험표","ADSP","ADsP 51회 exam",1]]]
+];
+
+/* Checkbox ids are date-index, so items are appended rather than inserted; display order sorts by time. */
+const RESORT={"2026-10-01":1};
+const ORDER=t=>{if(t==="Today")return -2;if(/^\d/.test(t))return parseInt(t.slice(0,2),10)*60+parseInt(t.slice(3,5)||"0",10);if(t==="Commute")return 540;if(t==="Morning")return 480;if(t==="Moved")return 2000;return 1500};
+
+const pad=n=>String(n).padStart(2,"0");
+const seoulToday=()=>{try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul"}).format(new Date())}catch(e){const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}};
+let TODAY=seoulToday();
+const DOW=["일","월","화","수","목","금","토"];
+const dayOf=s=>new Date(s+"T00:00:00").getDay();
+const diff=(a,b)=>Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/864e5);
+const md=d=>`${+d.slice(5,7)}/${+d.slice(8)}`;
+
+let checks={}; let hidePast=false; let wmode=false;
+try{hidePast=localStorage.getItem("hidePast")==="1"; wmode=localStorage.getItem("wmode")==="1"}catch(e){}
+if(location.hash==="#widget") wmode=true;
+if(location.hash==="#full") wmode=false;
+
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function fixedLine(date){
+  const dow=dayOf(date), hol=HOLI[date];
+  if(hol) return hol+" · no class";
+  if(TT[dow]&&!EXAMWEEK(date)) return "Class: "+TT[dow];
+  if(EXAMWEEK(date)&&(dow===1||dow===5)) return dow===1?"근로 14:00–17:00":"근로 09:00–12:00";
+  return "";
+}
+function orderIdx(date,items){const idx=items.map((it,i)=>i); if(RESORT[date]) idx.sort((a,b)=>ORDER(items[a][0])-ORDER(items[b][0])||a-b); return idx}
+function itemHTML(date,it,i,prefix){
+  const id=date+"-"+i; const [t,k,txt,ex]=it; const c=C[k];
+  return `<label class="item ${ex?"exam":""}"><input type="checkbox" id="${prefix}-${id}" data-id="${id}" ${checks[id]?"checked":""}><span class="time">${esc(t)}</span><span class="what"><span class="chip" style="--c:var(${c[1]})">${esc(c[0])}</span>${esc(txt)}</span></label>`;
+}
+
+function renderMilestones(){
+  document.getElementById("ms").innerHTML=MS.map(([d,n,k])=>{
+    const dd=diff(TODAY,d); const cd=dd>0?"D-"+dd:dd===0?"D-DAY":"done";
+    return `<div class="ms ${dd<0?"past":""}" style="--c:var(${C[k][1]})"><span class="d">${md(d)} (${DOW[dayOf(d)]})</span><span class="n">${esc(n)}</span><span class="cd">${cd}</span></div>`}).join("");
+}
+
+function render(){
+  const weeks=[];
+  D.forEach(day=>{const dow=dayOf(day[0]); if(!weeks.length||dow===1&&day[0]!==D[0][0]) weeks.push([]); weeks[weeks.length-1].push(day)});
+  const titles=["Week 1 · VR assignment","Week 2 · 디지털회로 quiz","Week 3 · Midterm push","Week 4 · Exam week","Week 5 · ADsP"];
+  let total=0,done=0;
+  const html=weeks.map((w,wi)=>{
+    const first=w[0][0],last=w[w.length-1][0];
+    const rows=w.map(([date,focus,note,items])=>{
+      const isPast=date<TODAY; items.forEach((it,i)=>{total++; if(checks[date+"-"+i]) done++});
+      if(hidePast&&isPast) return "";
+      const dow=dayOf(date); const fixed=fixedLine(date);
+      const list=orderIdx(date,items).map(i=>itemHTML(date,items[i],i,"c")).join("");
+      return `<div class="day ${date===TODAY?"today":""} ${isPast?"past":""}" id="d-${date}">
+        <div class="rail"><span class="date">${md(date)}</span><span class="dow">${DOW[dow]}요일</span>${date===TODAY?'<span class="tag">Today</span>':focus?`<span class="tag">${esc(focus)}</span>`:""}</div>
+        <div class="blocks">${fixed?`<div class="fixed">${esc(fixed)}</div>`:""}${note?`<div class="note">${esc(note)}</div>`:""}${list}</div></div>`}).join("");
+    if(!rows) return "";
+    return `<section class="week"><h2><b>${titles[wi]||"Week "+(wi+1)}</b>${md(first)} – ${md(last)}</h2><div class="days">${rows}</div></section>`}).join("");
+  document.getElementById("weeks").innerHTML=html;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById("pLabel").textContent=`${done} of ${total} tasks done`;
+  document.getElementById("pPct").textContent=pct+"%";
+  document.getElementById("pFill").style.width=pct+"%";
+  document.getElementById("hidePast").textContent=hidePast?"Show past days":"Hide past days";
+  renderWidget();
+}
+
+/* ---- widget ---- */
+const clampDay=d=>d<D[0][0]?D[0][0]:d>D[D.length-1][0]?D[D.length-1][0]:d;
+let wDay=clampDay(TODAY);
+function shift(n){const i=D.findIndex(x=>x[0]===wDay); const j=Math.min(D.length-1,Math.max(0,i+n)); wDay=D[j][0]; renderWidget()}
+function renderWidget(){
+  const day=D.find(x=>x[0]===wDay); if(!day) return;
+  const [date,focus,note,items]=day;
+  const rel=diff(TODAY,date);
+  const relTxt=rel===0?"<b>Today</b>":rel===1?"Tomorrow":rel===-1?"Yesterday":rel>0?`in ${rel} days`:`${-rel} days ago`;
+  document.getElementById("wDate").textContent=`${md(date)} ${DOW[dayOf(date)]}`;
+  document.getElementById("wSub").innerHTML=relTxt+(focus?" · "+esc(focus):"");
+  document.getElementById("wPrev").disabled=date===D[0][0];
+  document.getElementById("wNext").disabled=date===D[D.length-1][0];
+  const nx=MS.find(m=>diff(TODAY,m[0])>=0); const nm=document.getElementById("wNextMs");
+  if(nx){const dd=diff(TODAY,nx[0]); nm.hidden=false; nm.style.setProperty("--c",`var(${C[nx[2]][1]})`);
+    nm.innerHTML=`<span>Next: <b>${esc(nx[1])}</b> · ${md(nx[0])}</span><span class="cd">${dd===0?"D-DAY":"D-"+dd}</span>`}
+  else nm.hidden=true;
+  let done=0; items.forEach((it,i)=>{if(checks[date+"-"+i]) done++});
+  const pct=items.length?Math.round(done/items.length*100):0;
+  document.getElementById("wLabel").textContent=`${done} of ${items.length} done`;
+  document.getElementById("wPct").textContent=pct+"%";
+  document.getElementById("wFill").style.width=pct+"%";
+  const fixed=fixedLine(date);
+  document.getElementById("wList").innerHTML=
+    (fixed?`<div class="fixed">${esc(fixed)}</div>`:"")+(note?`<div class="note">${esc(note)}</div>`:"")+
+    orderIdx(date,items).map(i=>itemHTML(date,items[i],i,"w")).join("")+
+    (done===items.length&&items.length?`<div class="w-done">All done for this day.</div>`:"");
+}
+function setMode(w){
+  wmode=w; document.body.classList.toggle("wmode",w);
+  try{localStorage.setItem("wmode",w?"1":"0")}catch(e){}
+  if(w){wDay=clampDay(TODAY); renderWidget(); window.scrollTo(0,0)}
+}
+
+/* ---- storage: db (syncs across devices) with localStorage fallback ---- */
+let ref=null, writing=false, pending=false, timer=null;
+const syncEl=document.getElementById("sync"), wSyncEl=document.getElementById("wSync");
+function setSync(t){syncEl.textContent=t; wSyncEl.textContent=t}
+function saveLocal(){try{localStorage.setItem("checks",JSON.stringify(checks))}catch(e){}}
+function loadLocal(){try{const s=localStorage.getItem("checks"); if(s) checks=JSON.parse(s)||{}}catch(e){}}
+async function flush(){
+  if(!ref) return; if(writing){pending=true;return}
+  writing=true; setSync("Saving…");
+  try{await ref.set({checks:{...checks},updatedAt:Date.now()}); setSync("Saved · synced")}
+  catch(e){setSync("Couldn't save to your account. Kept on this device.")}
+  writing=false; if(pending){pending=false; flush()}
+}
+function schedule(){saveLocal(); clearTimeout(timer); timer=setTimeout(()=>{timer=null;flush()},700)}
+
+document.querySelector(".wrap").addEventListener("change",e=>{
+  const id=e.target.dataset&&e.target.dataset.id; if(!id) return;
+  if(e.target.checked) checks[id]=true; else delete checks[id];
+  render(); schedule();
+});
+document.getElementById("jump").addEventListener("click",()=>{
+  const el=document.getElementById("d-"+TODAY)||document.querySelector(".day:not(.past)");
+  if(el) el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+});
+document.getElementById("hidePast").addEventListener("click",()=>{hidePast=!hidePast; try{localStorage.setItem("hidePast",hidePast?"1":"0")}catch(e){} render()});
+document.getElementById("toWidget").addEventListener("click",()=>setMode(true));
+document.getElementById("toFull").addEventListener("click",()=>setMode(false));
+document.getElementById("wPrev").addEventListener("click",()=>shift(-1));
+document.getElementById("wNext").addEventListener("click",()=>shift(1));
+document.getElementById("wToday").addEventListener("click",()=>{wDay=clampDay(TODAY); renderWidget()});
+document.addEventListener("keydown",e=>{if(!wmode||e.target.tagName==="INPUT"&&e.target.type!=="checkbox")return; if(e.key==="ArrowLeft")shift(-1); if(e.key==="ArrowRight")shift(1)});
+
+/* roll over at midnight (Seoul) so the widget always shows today */
+setInterval(()=>{const t=seoulToday(); if(t!==TODAY){const wasToday=wDay===clampDay(TODAY); TODAY=t; if(wasToday) wDay=clampDay(TODAY); renderMilestones(); render()}},60000);
+
+loadLocal(); renderMilestones(); render(); setMode(wmode);
+
+(async()=>{
+  const cl=window.claude; if(!cl||!cl.use){setSync("Saved in this browser"); return}
+  try{
+    const [db,user]=await Promise.all([cl.use("db"),cl.use("user")]);
+    if(!db||!user){setSync("Saved in this browser"); return}
+    const uid=await user.id(); if(!uid){setSync("Sign in to sync across devices"); return}
+    ref=db.collection("data/users/"+uid).doc("checks");
+    let first=true;
+    ref.onSnapshot(snap=>{
+      const data=snap.exists&&snap.data()?snap.data():null;
+      if(first){first=false;
+        if(!data&&Object.keys(checks).length){flush()}
+        else if(data&&data.checks){checks={...data.checks}; saveLocal(); render()}
+        setSync("Synced with your account"); return}
+      if(data&&data.checks&&!writing&&!timer){checks={...data.checks}; saveLocal(); render()}
+    },()=>{setSync("Sync paused. Changes are kept on this device.")});
+  }catch(e){setSync("Saved in this browser")}
+})();
+</script>
+</body>
+</html>

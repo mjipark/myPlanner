@@ -84,6 +84,58 @@ body.wmode #widget{display:flex;flex-direction:column;gap:10px}
 .w-foot .sync{margin-left:auto}
 .w-done{font-size:.8rem;color:var(--accent);font-weight:700}
 
+/* ---- view switch + calendar ---- */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;border-radius:0;padding:6px 12px}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+body.cview .listonly{display:none}
+body.cview:not(.wmode) .wrap{max-width:1200px}
+body:not(.cview) #cal{display:none}
+#cal{display:flex;flex-direction:column;gap:10px}
+.cal-head{display:flex;align-items:center;gap:8px}
+.cal-head h2{margin:0;font-size:1.15rem;flex:1}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:.78rem;color:var(--muted)}
+.cal-grid{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.cweek{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);min-height:110px}
+.cweek:first-child{border-top:0}
+.cbg{border-left:1px solid var(--line);cursor:pointer;background:var(--surface)}
+.cbg:first-child{border-left:0}
+.cbg.weekend{background:var(--bg)}
+.cbg.out{background:var(--bg);opacity:.6}
+.cbg.today{background:var(--today)}
+.cbg.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.cbg:hover{box-shadow:inset 0 0 0 2px var(--line)}
+.cbg.sel:hover{box-shadow:inset 0 0 0 2px var(--accent)}
+.cnum{pointer-events:none;display:flex;justify-content:flex-end;align-items:baseline;gap:4px;padding:6px 8px 2px;font-family:var(--mono);font-size:.85rem}
+.cnum .hol{font-family:var(--sans);font-size:.65rem;color:var(--ds);font-weight:700;margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cnum.holi .n{color:var(--ds)}
+.cnum.out .n{color:var(--muted)}
+.cnum.today .n{background:var(--accent);color:var(--surface);border-radius:99px;padding:0 6px}
+.cspan{pointer-events:none;margin:2px 0;padding:2px 8px;font-size:.75rem;font-weight:700;color:var(--fg);background:color-mix(in srgb,var(--c) 22%,var(--surface));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cspan.s{margin-left:6px;border-top-left-radius:6px;border-bottom-left-radius:6px}
+.cspan.e{margin-right:6px;border-top-right-radius:6px;border-bottom-right-radius:6px}
+.citems{pointer-events:none;display:flex;flex-direction:column;gap:3px;padding:4px 5px 8px;min-width:0}
+.cchip{pointer-events:auto;display:flex;align-items:center;gap:4px;min-width:0;font-size:.72rem;line-height:1.3;padding:2px 5px;border-radius:5px;background:color-mix(in srgb,var(--c) 14%,var(--surface));cursor:pointer}
+.cchip input{margin:0;width:11px;height:11px;flex:none;accent-color:var(--c)}
+.cchip .ct{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cchip .tm{font-family:var(--mono);font-size:.65rem;color:var(--muted);flex:none}
+.cchip.exam{box-shadow:inset 0 0 0 1.5px var(--c);font-weight:700}
+.cchip.done .ct{text-decoration:line-through;color:var(--muted)}
+.cmore{pointer-events:auto;font:inherit;font-size:.7rem;color:var(--muted);background:none;border:0;padding:0 5px;text-align:left;cursor:pointer}
+.cal-detail h3{margin:0;font-size:1rem}
+.cal-detail h3 span{font-weight:400;color:var(--muted);font-size:.85rem;margin-left:6px}
+@media (max-width:640px){
+  .cweek{min-height:72px}
+  .citems{flex-direction:row;flex-wrap:wrap;gap:3px;padding:2px 4px 6px}
+  .cchip{width:9px;height:9px;padding:0;border-radius:50%;background:var(--c)}
+  .cchip.done{opacity:.3}
+  .cchip input,.cchip .ct,.cchip .tm{display:none}
+  .cmore{display:none}
+  .cnum .hol{display:none}
+  .cspan{font-size:.62rem;padding:1px 4px}
+}
+
 @media (max-width:520px){
   .day{grid-template-columns:1fr;gap:6px}
   .rail{flex-direction:row;gap:8px;align-items:baseline}
@@ -110,13 +162,29 @@ body.wmode #widget{display:flex;flex-direction:column;gap:10px}
   </section>
 
   <div class="toolbar">
+    <div class="seg" role="group" aria-label="View">
+      <button id="vList" type="button" aria-pressed="true">List</button>
+      <button id="vCal" type="button" aria-pressed="false">Calendar</button>
+    </div>
     <button id="toWidget" class="primary" type="button">Desktop widget</button>
-    <button id="jump" type="button">Jump to today</button>
-    <button id="hidePast" type="button">Hide past days</button>
+    <button id="jump" class="listonly" type="button">Jump to today</button>
+    <button id="hidePast" class="listonly" type="button">Hide past days</button>
     <span class="sync" id="sync">Loading your progress…</span>
   </div>
 
-  <main id="weeks"></main>
+  <main id="weeks" class="listonly"></main>
+
+  <section id="cal" aria-label="Calendar">
+    <div class="cal-head">
+      <h2 id="calTitle"></h2>
+      <button class="icon" id="cPrev" type="button" aria-label="Previous month">‹</button>
+      <button id="cToday" type="button">Today</button>
+      <button class="icon" id="cNext" type="button" aria-label="Next month">›</button>
+    </div>
+    <div class="cal-dow"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="w-card cal-detail" id="calDetail"></div>
+  </section>
 
   <footer>Evening blocks assume roughly 19:00–22:00 on weekdays. Mon–Thu you leave around 09:30 (wake 07:30 for a morning block); Fri you leave 07:30–08:00, so no morning study. Every ADsP line is Part 3 unless it says otherwise, since that part caused the 과락 last time (20/60, cutoff 24). Confirm exam times with each professor, and check your ADsP 수험표 for the start time.</footer>
 
@@ -243,6 +311,7 @@ function render(){
   document.getElementById("pFill").style.width=pct+"%";
   document.getElementById("hidePast").textContent=hidePast?"Show past days":"Hide past days";
   renderWidget();
+  if(typeof renderCal==="function"&&document.getElementById("calGrid")) renderCal();
 }
 
 /* ---- widget ---- */
@@ -273,6 +342,72 @@ function renderWidget(){
     orderIdx(date,items).map(i=>itemHTML(date,items[i],i,"w")).join("")+
     (done===items.length&&items.length?`<div class="w-done">All done for this day.</div>`:"");
 }
+/* ---- calendar ---- */
+const SPANS=[["2026-09-30","2026-10-07","VR assignment","VR"],["2026-10-13","2026-10-19","Midterm push","DS"],["2026-10-20","2026-10-26","시험기간 · midterms","COMP"],["2026-10-27","2026-10-31","ADsP week","ADSP"]];
+const MONTHS=["2026-09","2026-10","2026-11"];
+const MNAME=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const addDays=(s,n)=>{const d=new Date(s+"T00:00:00Z");d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
+const BYDATE=Object.fromEntries(D.map(x=>[x[0],x]));
+let calMonth=MONTHS.includes(TODAY.slice(0,7))?TODAY.slice(0,7):"2026-10";
+let selDay=clampDay(TODAY);
+let view="list";
+try{view=localStorage.getItem("view")==="cal"?"cal":"list"}catch(e){}
+
+function renderCal(){
+  const [y,m]=calMonth.split("-").map(Number);
+  document.getElementById("calTitle").textContent=`${MNAME[m-1]} ${y}`;
+  const mi=MONTHS.indexOf(calMonth);
+  document.getElementById("cPrev").disabled=mi<=0;
+  document.getElementById("cNext").disabled=mi>=MONTHS.length-1;
+  const first=calMonth+"-01";
+  const lastD=new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);
+  let ws=addDays(first,-new Date(first+"T00:00:00Z").getUTCDay());
+  let html="";
+  while(ws<=lastD){
+    const we=addDays(ws,6);
+    const sp=SPANS.filter(s=>s[0]<=we&&s[1]>=ws);
+    const rows=`auto ${"auto ".repeat(sp.length)}1fr`;
+    let w="";
+    for(let c=0;c<7;c++){
+      const d=addDays(ws,c), out=d.slice(0,7)!==calMonth, hol=HOLI[d];
+      const cls=[c===0||c===6?"weekend":"",out?"out":"",d===TODAY?"today":"",d===selDay?"sel":""].join(" ");
+      w+=`<div class="cbg ${cls}" data-day="${d}" style="grid-column:${c+1};grid-row:1/-1" role="button" tabindex="0" aria-label="${md(d)}"></div>`;
+      w+=`<div class="cnum ${out?"out":""} ${hol?"holi":""} ${d===TODAY?"today":""}" style="grid-column:${c+1};grid-row:1">${hol?`<span class="hol">${esc(hol)}</span>`:""}<span class="n">${+d.slice(8)===1||c===0&&out?md(d):+d.slice(8)}</span></div>`;
+      const day=BYDATE[d];
+      if(day){
+        const items=day[3]; const idx=orderIdx(d,items);
+        const MAX=4; const shown=idx.slice(0,MAX);
+        const chips=shown.map(i=>{const [t,k,txt,ex]=items[i]; const id=d+"-"+i; const tm=/^\d/.test(t)?t.split("–")[0]:"";
+          return `<label class="cchip ${ex?"exam":""} ${checks[id]?"done":""}" style="--c:var(${C[k][1]})" title="${esc(C[k][0]+" · "+t+" · "+txt)}"><input type="checkbox" id="k-${id}" data-id="${id}" ${checks[id]?"checked":""}><span class="ct">${esc(txt)}</span>${tm?`<span class="tm">${tm}</span>`:""}</label>`}).join("");
+        const more=idx.length>MAX?`<button class="cmore" type="button" data-day="${d}">+${idx.length-MAX} more</button>`:"";
+        w+=`<div class="citems" style="grid-column:${c+1};grid-row:${sp.length+2}">${chips}${more}</div>`;
+      }
+    }
+    sp.forEach((s,i)=>{
+      const a=s[0]<ws?0:diff(ws,s[0]), b=s[1]>we?6:diff(ws,s[1]);
+      w+=`<div class="cspan ${s[0]>=ws?"s":""} ${s[1]<=we?"e":""}" style="grid-column:${a+1}/${b+2};grid-row:${i+2};--c:var(${C[s[3]][1]})">${esc(s[2])}</div>`;
+    });
+    html+=`<div class="cweek" style="grid-template-rows:${rows}">${w}</div>`;
+    ws=addDays(ws,7);
+  }
+  document.getElementById("calGrid").innerHTML=html;
+  renderCalDetail();
+}
+function renderCalDetail(){
+  const el=document.getElementById("calDetail"); const day=BYDATE[selDay];
+  const head=`<h3>${md(selDay)} ${DOW[dayOf(selDay)]}요일<span>${selDay===TODAY?"Today":""}${day&&day[1]?(selDay===TODAY?" · ":"")+esc(day[1]):""}</span></h3>`;
+  if(!day){el.innerHTML=head+`<div class="w-empty">Nothing planned for this day.</div>`; return}
+  const [date,,note,items]=day; const fixed=fixedLine(date);
+  el.innerHTML=head+(fixed?`<div class="fixed">${esc(fixed)}</div>`:"")+(note?`<div class="note">${esc(note)}</div>`:"")+orderIdx(date,items).map(i=>itemHTML(date,items[i],i,"x")).join("");
+}
+function selectDay(d){selDay=d; if(d.slice(0,7)!==calMonth&&MONTHS.includes(d.slice(0,7))) calMonth=d.slice(0,7); renderCal()}
+function setView(v){
+  view=v; document.body.classList.toggle("cview",v==="cal");
+  document.getElementById("vList").setAttribute("aria-pressed",v==="list");
+  document.getElementById("vCal").setAttribute("aria-pressed",v==="cal");
+  try{localStorage.setItem("view",v)}catch(e){}
+}
+
 function setMode(w){
   wmode=w; document.body.classList.toggle("wmode",w);
   try{localStorage.setItem("wmode",w?"1":"0")}catch(e){}
@@ -309,12 +444,24 @@ document.getElementById("toFull").addEventListener("click",()=>setMode(false));
 document.getElementById("wPrev").addEventListener("click",()=>shift(-1));
 document.getElementById("wNext").addEventListener("click",()=>shift(1));
 document.getElementById("wToday").addEventListener("click",()=>{wDay=clampDay(TODAY); renderWidget()});
+document.getElementById("vList").addEventListener("click",()=>setView("list"));
+document.getElementById("vCal").addEventListener("click",()=>setView("cal"));
+document.getElementById("cPrev").addEventListener("click",()=>{const i=MONTHS.indexOf(calMonth); if(i>0){calMonth=MONTHS[i-1]; renderCal()}});
+document.getElementById("cNext").addEventListener("click",()=>{const i=MONTHS.indexOf(calMonth); if(i<MONTHS.length-1){calMonth=MONTHS[i+1]; renderCal()}});
+document.getElementById("cToday").addEventListener("click",()=>selectDay(TODAY));
+document.getElementById("calGrid").addEventListener("click",e=>{
+  if(e.target.closest(".cchip")) return;
+  const t=e.target.closest("[data-day]"); if(t) selectDay(t.dataset.day);
+});
+document.getElementById("calGrid").addEventListener("keydown",e=>{
+  const t=e.target.closest(".cbg"); if(t&&(e.key==="Enter"||e.key===" ")){e.preventDefault(); selectDay(t.dataset.day)}
+});
 document.addEventListener("keydown",e=>{if(!wmode||e.target.tagName==="INPUT"&&e.target.type!=="checkbox")return; if(e.key==="ArrowLeft")shift(-1); if(e.key==="ArrowRight")shift(1)});
 
 /* roll over at midnight (Seoul) so the widget always shows today */
 setInterval(()=>{const t=seoulToday(); if(t!==TODAY){const wasToday=wDay===clampDay(TODAY); TODAY=t; if(wasToday) wDay=clampDay(TODAY); renderMilestones(); render()}},60000);
 
-loadLocal(); renderMilestones(); render(); setMode(wmode);
+loadLocal(); renderMilestones(); setView(view); render(); setMode(wmode);
 
 (async()=>{
   const cl=window.claude; if(!cl||!cl.use){setSync("Saved in this browser"); return}

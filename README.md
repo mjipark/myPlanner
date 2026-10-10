@@ -2,10 +2,9 @@
 
 Study + daily planner for October 2026 exam season (VR assignment, 디지털회로 quiz, six midterms, ADsP 51회), with a daily rhythm that keeps going through November.
 
-Three tabs (side rail on desktop, bottom bar on phones; swipe left/right on phones):
+Two tabs (side rail on desktop, bottom bar on phones; swipe left/right on phones):
 
-- **Today** – timeline for one day: wake-up, routine, classes, 근로 (Mon 14:00–17:00, Fri 09:00–12:00), study blocks, lights out
-- **Plan** – the full exam plan, week by week, with each day's rhythm strip
+- **Plan** – the full exam plan, week by week. Each task shows a suggested length (~2h 30m) instead of a clock time, and each day shows its total study time and any 근로 hours
 - **Calendar** – month grid; tap a day to see and tick its tasks
 
 ## Sync across devices

@@ -328,15 +328,14 @@ dialog[open] .dlg{animation:dlgIn .5s var(--spring)}
 }
 </style>
 </head>
-<body data-tab="today">
+<body data-tab="plan">
 <div class="shell">
   <aside class="side">
     <div class="side-in glass">
       <div class="brand"><img src="icons/icon-192.png" alt=""><div><b>민지's Planner</b><span>Study + daily plan</span></div></div>
       <nav class="nav" id="nav" role="tablist" aria-label="Planner views">
         <div class="blob" id="navBlob" aria-hidden="true"></div>
-        <button role="tab" data-tab="today" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg><span>Today</span></button>
-        <button role="tab" data-tab="plan" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9"/></svg><span>Plan</span></button>
+        <button role="tab" data-tab="plan" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9"/></svg><span>Plan</span></button>
         <button role="tab" data-tab="cal" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/><circle cx="12" cy="15" r="1.6" class="dot"/></svg><span>Calendar</span></button>
       </nav>
       <div class="side-card">
@@ -347,32 +346,15 @@ dialog[open] .dlg{animation:dlgIn .5s var(--spring)}
   </aside>
 
   <main class="stage" id="stage">
-    <div class="topbar"><img src="icons/icon-192.png" alt=""><b id="topTitle">Today</b><button class="syncpill" id="topSync" type="button" data-s="off"><i></i><span>Sync</span></button></div>
-
-    <!-- TODAY -->
-    <section class="page active" data-page="today" aria-label="Today">
-      <header class="thead rv" style="--i:0">
-        <div class="thead-row"><span class="eb" id="hEb"></span>
-          <div class="dnav"><button class="icon" id="tPrev" type="button" aria-label="Previous day">‹</button><button class="pbtn" id="tNow" type="button">Today</button><button class="icon" id="tNext" type="button" aria-label="Next day">›</button></div></div>
-        <h1 id="hTitle"></h1>
-        <p class="hsub" id="hSub"></p>
-        <div class="stats" id="hStats"></div>
-        <p class="nextline" id="nowCard"></p>
-        <div class="pbar"><div class="pfill" id="pFill"></div></div><div class="pcap" id="pCap"></div>
-      </header>
-      <div class="card solid rv" style="--i:1">
-        <div class="sec-h"><h2>Timeline</h2><span id="tlCap"></span></div>
-        <div class="tlwrap" id="timeline"></div>
-      </div>
-    </section>
+    <div class="topbar"><img src="icons/icon-192.png" alt=""><b id="topTitle">Exam plan</b><button class="syncpill" id="topSync" type="button" data-s="off"><i></i><span>Sync</span></button></div>
 
     <!-- PLAN -->
-    <section class="page" data-page="plan" aria-label="Exam plan">
+    <section class="page active" data-page="plan" aria-label="Exam plan">
       <header class="phead rv" style="--i:0">
         <div>
           <p class="eb">October 2026 · Exam season</p>
           <h1>10월 시험 플래너</h1>
-          <p class="sub">9/30 – 10/31 · VR assignment, 디지털회로 quiz, 6 midterms, ADsP 51회</p>
+          <p class="sub">9/30 – 10/31 · VR assignment, 디지털회로 quiz, 컴파일러 assignment, 6 midterms, VR homework, ADsP 51회. Times are suggested lengths: fit them into your day however works.</p>
         </div>
       </header>
       <div class="rv" style="--i:1"><div class="pbar" style="margin-top:0"><div class="pfill" id="allFill"></div></div><div class="pcap" id="allCap"></div></div>
@@ -409,7 +391,7 @@ const C={VR:["가상현실","--vr"],DC:["디지털회로","--dc"],COMP:["컴파�
 const TT={1:"자료구조 10:30 · 디지털회로 12:00 · 근로 14:00–17:00",2:"딥러닝 10:30 · 추천시스템 13:30 · 가상현실 15:00",3:"자료구조 10:30 · 디지털회로 12:00 · 컴파일러 15:00",4:"딥러닝 10:30 · 추천시스템 13:30 · 가상현실 15:00",5:"근로 09:00–12:00 · 컴파일러 15:00"};
 const HOLI={"2026-10-03":"개천절","2026-10-05":"대체공휴일","2026-10-09":"한글날"};
 const EXAMWEEK=d=>d>="2026-10-20"&&d<="2026-10-26";
-const MS=[["2026-10-02","ADsP registration closes 17:59 (registered ✓)","ADSP"],["2026-10-07","VR assignment due","VR"],["2026-10-14","디지털회로 quiz","DC"],["2026-10-20","가상현실 midterm","VR"],["2026-10-21","디지털회로 + 컴파일러","COMP"],["2026-10-22","딥러닝 + 추천시스템","DL"],["2026-10-26","자료구조 midterm","DS"],["2026-10-31","ADsP 51회","ADSP"]];
+const MS=[["2026-10-02","ADsP registration closes 17:59 (registered ✓)","ADSP"],["2026-10-07","VR assignment due","VR"],["2026-10-14","디지털회로 quiz","DC"],["2026-10-16","컴파일러 assignment due","COMP"],["2026-10-20","가상현실 midterm","VR"],["2026-10-21","디지털회로 + 컴파일러","COMP"],["2026-10-22","딥러닝 + 추천시스템","DL"],["2026-10-26","자료구조 midterm","DS"],["2026-10-28","VR homework due","VR"],["2026-10-31","ADsP 51회","ADSP"]];
 // [date, focus label, note, [[time, subject, task, exam?]]]
 const D=[
 ["2026-09-30","Start","Tired tonight: L02 p.21–34 and the VR spec moved to tomorrow. Lights out ~23:15.",[["Today","ADSP","Register for ADsP 51회 (Seoul center) if the site is open"],["Until 21:00","REC","L01 Introduction + L02 part 1 p.1–20 (quizzes: L01 9/10, L02 7/8)"],["Moved","VR","→ 10/1 commute: read the assignment spec, list every deliverable"],["~23:00–23:15","ADSP","Light pass only: confusion matrix formulas (accuracy, precision, recall, F1, specificity), then sleep"],["Moved","REC","→ 10/1 07:45: finish L02 part 1 (p.21–34)"]]],
@@ -421,33 +403,33 @@ const D=[
 ["2026-10-06","","",[["11:45–13:15","DL","Catch up to the current lecture"],["19:00–21:00","VR","Final check. Submit tonight if you can."],["21:00–21:30","DC","Quiz-range formulas"],["21:30–22:00","ADSP","Mixed calculation set #2"]]],
 ["2026-10-07","","VR assignment due",[["Deadline","VR","Submit VR assignment",1],["13:15–15:00","DC","Quiz prep: redo lecture examples"],["19:00–21:00","DC","Quiz prep: problem sets"],["21:00–21:30","ADSP","R output: how to read summary(lm)"]]],
 ["2026-10-08","","",[["11:45–13:15","REC","Review this week's lectures"],["19:00–21:00","DC","Quiz prep: weak topics"],["21:00–21:30","ADSP","Regression coefficients, p-values, R², F-statistic"]]],
-["2026-10-09", "Rearranged", "Rearranged 17:35: 디지털회로 quiz moved to Wed 10/14 (4 lessons left). Tonight = 추천시스템, 컴파일러, ADsP. 자료구조 (Ch1 from p.20) moved to the weekend.", [["10:00–13:00", "DC", "Full quiz practice, timed"], ["14:00–16:00", "COMP", "Slides and exercises"], ["Moved", "DS", "→ 10/10–10/11 evenings: Ch1 from p.20"], ["17:30–18:30", "REC", "Finish L02 part 2"], ["19:00–21:00", "COMP", "First pass: 1. Course Overview + 2. Lexical Analysis. Start a one-page concept list (definitions, regex→NFA, NFA→DFA)"], ["21:00–21:30", "ADSP", "Reading ANOVA tables"]]],
-["2026-10-10", "", "", [["10:00–12:30", "DC", "Lesson 1 of the 4 left: read, then redo every worked example without looking"], ["13:30–16:00", "DC", "Lesson 2: read, then redo every worked example"], ["16:30–17:30", "REC", "Midterm-range first pass (short)"], ["Moved", "DL", "Midterm first pass → 10/13 and 10/14 blocks"], ["19:00–20:00", "DS", "Ch1 p.20 → end: performance analysis, asymptotic notation"], ["20:00–20:20", "COMP", "Recall from your concept list, no slides"], ["20:30–21:00", "ADSP", "t-test and chi-square output"]]],
-["2026-10-11", "", "", [["10:00–12:30", "DC", "Lesson 3: read, then redo every worked example"], ["13:30–15:30", "COMP", "3. Top-down Parsing first pass: FIRST/FOLLOW, LL(1) table, work the examples by hand"], ["16:00–17:30", "VR", "Midterm-range first pass"], ["19:00–20:00", "DS", "Finish Ch1, then start Ch2 (arrays, dynamic allocation)"], ["20:00–21:00", "ADSP", "Part 3 mock from the app, timed (baseline)"]]],
+["2026-10-09", "Rearranged", "Rearranged 17:35: 디지털회로 quiz moved to Wed 10/14 (4 lessons left). Tonight = 추천시스템, 컴파일러, ADsP. 자료구조 (Ch1 from p.20) moved to the weekend.", [["10:00–13:00", "DC", "Full quiz practice, timed"], ["14:00–16:00", "COMP", "Slides and exercises"], ["Moved", "DS", "→ 10/10–10/11 evenings: Ch1 from p.20"], ["17:30–18:30", "REC", "Finish L02 part 2"], ["Moved", "COMP", "→ 10/10 at the library: 1. Course Overview + 2. Lexical Analysis first pass"], ["21:00–21:30", "ADSP", "Reading ANOVA tables"]]],
+["2026-10-10", "Rearranged", "Rearranged 11:00 at the library: 컴파일러 from yesterday first, ADsP mock in place of lunch, then 디지털회로 over 자료구조 (quiz Wed, DS midterm not until 10/26).", [["15:30–18:00", "DC", "Lesson 1 of the 4 left: read, then redo every worked example without looking"], ["19:00–21:00", "DC", "Lesson 2: read, then redo every worked example"], ["Moved", "REC", "→ 10/11 evening: midterm-range first pass (short)"], ["Moved", "DL", "Midterm first pass → 10/13 and 10/14 blocks"], ["Moved", "DS", "→ 10/11 evening: Ch1 p.20 → end"], ["21:00–21:15", "COMP", "Recall from the concept list you started this morning, no slides"], ["Moved", "ADSP", "t-test / chi-square → covered by today's mock"], ["11:00–13:30", "COMP", "Catch up from 10/9: 1. Course Overview + 2. Lexical Analysis. Start a one-page concept list (definitions, regex→NFA, NFA→DFA)"], ["13:30–15:00", "ADSP", "Part 3 mock from the app, timed (baseline). Note the topics you miss"], ["Today", "GEN", "Skipping lunch: eat something before the mock"]]],
+["2026-10-11", "", "", [["10:00–12:30", "DC", "Lesson 3: read, then redo every worked example"], ["13:30–15:30", "COMP", "3. Top-down Parsing first pass: FIRST/FOLLOW, LL(1) table, work the examples by hand"], ["16:00–17:30", "VR", "Midterm-range first pass + read the new homework spec (overlaps midterm content)"], ["19:00–20:30", "DS", "Ch1 p.20 → end (from 10/10), then start Ch2 (arrays, dynamic allocation)"], ["20:30–21:30", "REC", "Midterm-range first pass, short (moved from 10/10)"], ["17:30–18:30", "COMP", "Assignment: watch the video lecture, skim the spec"]]],
 ["2026-10-12", "", "No quiz today (moved to Wed)", [["09:30–10:20", "DC", "Formula review: lessons 1–3"], ["14:00–17:00", "DC", "At 근로: Lesson 4, read + redo every worked example"], ["19:00–21:00", "DS", "Ch2: arrays, structures, polynomials, sparse matrix, strings"], ["21:00–21:20", "COMP", "Recall: lexer + FIRST/FOLLOW"], ["21:20–22:00", "ADSP", "Review every wrong answer from the baseline mock, mark weakest topics"]]],
-["2026-10-13", "Midterm push", "", [["11:45–13:15", "DL", "Midterm prep"], ["19:00–20:30", "DC", "Quiz prep: timed practice across all 4 lessons"], ["20:30–21:15", "DC", "Fix mistakes, write the formula/steps sheet"], ["21:15–21:30", "COMP", "Recall from concept list"], ["21:30–22:00", "ADSP", "Hypothesis testing: 1종/2종 오류, p-value"]]],
-["2026-10-14", "", "디지털회로 quiz in class", [["Morning", "DC", "Formula/steps sheet only, no new problems"], ["12:00", "DC", "디지털회로 quiz", 1], ["13:15–15:00", "DC", "Redo the quiz mistakes (counts as midterm prep)"], ["19:00–21:00", "DL", "Midterm prep"], ["21:00–21:30", "ADSP", "Sampling methods, Pearson vs Spearman"]]],
-["2026-10-15", "", "", [["Today", "AICE", "Check November AICE Associate dates on aice.study and register"], ["11:45–13:15", "REC", "Midterm prep"], ["19:00–21:00", "COMP", "4. Bottom-up Parsing first pass: LR items, SLR(1) table, work the examples by hand"], ["21:00–21:30", "DS", "Ch3 part 1: stacks, queues, circular queues"], ["21:30–22:00", "ADSP", "Time series: 정상성, AR / MA / ARIMA"]]],
-["2026-10-16", "", "", [["09:00–12:00", "DS", "At 근로: Ch3 part 2: maze, postfix evaluation, infix → postfix"], ["12:00–14:45", "COMP", "Practice by hand: NFA→DFA, FIRST/FOLLOW, LL(1) table"], ["19:00–21:00", "REC", "Midterm prep"], ["21:00–21:30", "ADSP", "PCA: scree plot, explained variance"]]],
+["2026-10-13", "Midterm push", "", [["11:45–13:15", "DL", "Midterm prep"], ["19:00–20:30", "DC", "Quiz prep: timed practice across all 4 lessons"], ["20:30–21:15", "DC", "Fix mistakes, write the formula/steps sheet"], ["21:15–21:30", "COMP", "Recall from concept list"], ["21:30–22:00", "ADSP", "Hypothesis testing: 1종/2종 오류, p-value"], ["16:30–18:30", "COMP", "Assignment: start building"]]],
+["2026-10-14", "", "디지털회로 quiz in class", [["Morning", "DC", "Formula/steps sheet only, no new problems"], ["12:00", "DC", "디지털회로 quiz", 1], ["13:15–15:00", "DC", "Redo the quiz mistakes (counts as midterm prep)"], ["19:00–21:00", "DL", "Midterm prep"], ["21:00–21:30", "ADSP", "Sampling methods, Pearson vs Spearman"], ["16:30–18:30", "COMP", "Assignment: main build"]]],
+["2026-10-15", "", "", [["Today", "AICE", "Check November AICE Associate dates on aice.study and register"], ["11:45–13:15", "REC", "Midterm prep"], ["19:00–21:00", "COMP", "4. Bottom-up Parsing first pass: LR items, SLR(1) table, work the examples by hand"], ["21:00–21:30", "DS", "Ch3 part 1: stacks, queues, circular queues"], ["21:30–22:00", "ADSP", "Time series: 정상성, AR / MA / ARIMA"], ["16:30–18:30", "COMP", "Assignment: finish and test"]]],
+["2026-10-16", "", "컴파일러 assignment due", [["09:00–12:00", "DS", "At 근로: Ch3 part 2: maze, postfix evaluation, infix → postfix"], ["12:00–14:45", "COMP", "Assignment: last fixes and submit first, then practice by hand: NFA→DFA, FIRST/FOLLOW, LL(1) table"], ["19:00–21:00", "REC", "Midterm prep"], ["21:00–21:30", "ADSP", "PCA: scree plot, explained variance"], ["Deadline", "COMP", "Submit 컴파일러 assignment", 1]]],
 ["2026-10-17", "", "", [["10:00–12:30", "COMP", "Practice, timed: LR items + SLR table, then concept-list recall"], ["13:30–16:00", "DC", "Midterm practice problems, timed"], ["16:30–18:00", "DL", "Midterm prep"], ["19:00–20:00", "DS", "Finish Ch3, skim Ch1–3 (reading done)"], ["20:00–20:30", "ADSP", "Decision trees: Gini, entropy, pruning"]]],
-["2026-10-18", "", "", [["10:00–12:30", "DL", "Practice and past questions"], ["13:30–15:30", "REC", "Practice and past questions"], ["16:00–18:30", "VR", "Full midterm review"], ["20:00–21:00", "ADSP", "Ensembles (bagging, boosting, RF) + clustering (계층적, k-means, SOM)"], ["21:00–21:20", "COMP", "Recall from concept list"]]],
+["2026-10-18", "", "", [["10:00–12:30", "DL", "Practice and past questions"], ["13:30–15:30", "REC", "Practice and past questions"], ["16:00–18:30", "VR", "Full midterm review (include the homework concepts)"], ["20:00–21:00", "ADSP", "Ensembles (bagging, boosting, RF) + clustering (계층적, k-means, SOM)"], ["21:00–21:20", "COMP", "Recall from concept list"]]],
 ["2026-10-19", "", "Last day before exams. ADsP paused until 10/25.", [["09:00–10:20", "VR", "Summary sheet"], ["13:15–14:00", "VR", "Weak spots"], ["14:00–17:00", "COMP", "At 근로: concept list + one LL(1) and one SLR problem"], ["19:00–20:30", "VR", "Final review"], ["20:30–22:00", "DC", "Light review: formula sheet"]]],
 ["2026-10-20","Exam week","",[["Morning","VR","Last look at the summary sheet"],["15:00","VR","가상현실 midterm",1],["17:00–19:00","DC","Final review"],["20:00–22:00","COMP","Final review"]]],
 ["2026-10-21","","Two exams",[["Morning","DC","Formula sheet + 2 practice problems"],["12:00","DC","디지털회로 midterm",1],["13:15–14:45","COMP","Last look"],["15:00","COMP","컴파일러 midterm",1],["18:00–20:00","DL","Final review"],["20:30–22:00","REC","Final review"]]],
 ["2026-10-22","","Two exams",[["10:30","DL","딥러닝 midterm",1],["11:45–13:15","REC","Last look"],["13:30","REC","추천시스템 midterm",1],["Evening","GEN","Rest. Light 자료구조 skim only."]]],
-["2026-10-23","","",[["13:00–16:00","DS","Midterm prep"],["19:00–21:00","DS","Practice problems"]]],
-["2026-10-24","","",[["10:00–13:00","DS","Midterm-range review"],["14:00–17:00","DS","Practice problems and code tracing"]]],
+["2026-10-23","","",[["13:00–16:00","DS","Midterm prep"],["19:00–21:00","DS","Practice problems"],["16:30–18:30","VR","Homework: build"]]],
+["2026-10-24","","",[["10:00–13:00","DS","Midterm-range review"],["14:00–17:00","DS","Practice problems and code tracing"],["17:30–19:30","VR","Homework: continue"]]],
 ["2026-10-25","","",[["10:00–12:00","DS","Timed mock"],["13:00–15:00","DS","Fix weak topics"],["20:00–21:00","ADSP","Warm-up: flip through your Part 3 notes"]]],
 ["2026-10-26","","Last midterm",[["10:30","DS","자료구조 midterm",1],["19:00–20:00","ADSP","Review Part 3 formula notes"]]],
-["2026-10-27","ADsP week","",[["11:45–13:15","ADSP","Formula recall: confusion matrix, association rules, distances"],["19:00–20:30","ADSP","기출 #1, timed (90 min)"],["20:30–22:00","ADSP","Review every wrong answer, start 오답노트"]]],
-["2026-10-28","","",[["13:15–15:00","ADSP","Drill the weakest topic from 기출 #1"],["19:00–20:30","ADSP","기출 #2, timed"],["20:30–22:00","ADSP","Review wrong answers"]]],
+["2026-10-27","ADsP week","",[["11:45–13:15","ADSP","Formula recall: confusion matrix, association rules, distances"],["19:00–20:30","ADSP","기출 #1, timed (90 min)"],["20:30–22:00","ADSP","Review every wrong answer, start 오답노트"],["16:30–18:30","VR","Homework: finish and test"]]],
+["2026-10-28","","VR homework due",[["13:15–15:00","ADSP","Drill the weakest topic from 기출 #1"],["19:00–20:30","ADSP","기출 #2, timed"],["20:30–22:00","ADSP","Review wrong answers"],["Deadline","VR","Submit VR homework",1]]],
 ["2026-10-29","","",[["11:45–13:15","ADSP","R-output interpretation drill"],["19:00–20:30","ADSP","기출 #3, timed"],["20:30–22:00","ADSP","Go through the 오답노트"]]],
 ["2026-10-30","","Sleep early",[["12:00–14:45","ADSP","Part 1–2 key terms (quick pass)"],["19:00–20:30","ADSP","오답노트 + formula sheet one last time"],["Tonight","ADSP","Pack ID, 수험표, pens. Check the exam start time."]]],
 ["2026-10-31","","",[["Morning","ADSP","Light formula review only"],["See 수험표","ADSP","ADsP 51회 exam",1]]]
 ];
 
 /* Checkbox ids are date-index, so items are appended rather than inserted; display order sorts by time. */
-const RESORT={"2026-10-01":1,"2026-10-02":1,"2026-10-09":1};
+const RESORT={"2026-10-01":1,"2026-10-02":1,"2026-10-09":1,"2026-10-10":1,"2026-10-11":1,"2026-10-13":1,"2026-10-14":1,"2026-10-15":1,"2026-10-16":1,"2026-10-23":1,"2026-10-24":1,"2026-10-27":1,"2026-10-28":1};
 const ORDER=t=>{if(t==="Today")return -2;if(/^\d/.test(t)){const h=parseInt(t.slice(0,2),10);return (h<5?h+24:h)*60+parseInt(t.slice(3,5)||"0",10)}if(t==="Commute")return 540;if(t==="Morning")return 480;if(t==="Moved")return 2000;if(t==="Done")return -1;return 1500};
 const pad=n=>String(n).padStart(2,"0");
 const seoulToday=()=>{try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul"}).format(new Date())}catch(e){const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}};
@@ -484,44 +466,15 @@ const WORDT={Morning:480,Commute:540,Evening:1140,Tonight:1260};
 function startMin(t){const m=toMin(t);if(m!=null)return m;return WORDT[t]!=null?WORDT[t]:null}
 function endMin(t){const m=/–~?(\d{1,2}):(\d{2})/.exec(t);if(!m)return null;let h=+m[1];if(h<5)h+=24;return h*60+ +m[2]}
 
+const durOf=t=>{const a=toMin(t),b=endMin(t);return a!=null&&b!=null&&b>a?b-a:null};
+const durTxt=m=>m<60?m+"m":Math.floor(m/60)+"h"+(m%60?" "+m%60+"m":"");
+/* clock ranges become suggested lengths; fixed times (exams, deadlines) stay as written */
+const showT=t=>{const m=durOf(t);return m!=null?"~"+durTxt(m):t};
+function dayTotal(items){let s=0;items.forEach(([t,k,txt,ex])=>{if(ex||t==="Moved"||t==="Done")return;const m=durOf(t);if(m)s+=m});return s}
 function dayType(d){const w=dayOf(d);if(HOLI[d]||w===0||w===6)return"free";return w===5?"fri":"class"}
 function wakeOf(d){return WAKE_OVR[d]||{class:"07:30",fri:"06:45",free:"08:30"}[dayType(d)]}
 function bedOf(d){const w=toMin(wakeOf(addDays(d,1)));return Math.max(1350,Math.min(1410,w+1440-510))}
 function workOf(d){const w=WORK[dayOf(d)];return w&&!HOLI[d]?w:null}
-function routineItems(d){
-  const t=dayType(d),w=toMin(wakeOf(d)),b=bedOf(d),R=[];
-  const add=(m,end,key,icon,label,sub,kind)=>R.push({m,end,key,icon,label,sub,kind:kind||"routine"});
-  add(w,w+10,"wake","sun","Wake up",t==="free"?"Within ~1h of your weekday time, so Monday stays easy":"Alarm across the room · lights on · glass of water");
-  if(t==="class"){
-    add(w+30,w+50,"warm","book","Morning warm-up (15 min)","Recall yesterday's notes or ADsP formulas, no new material");
-    add(w+50,w+110,"ready","drop","Shower, get ready, breakfast","");
-    add(570,null,"leave","leave","Leave home","Around 09:30");
-  }else if(t==="fri"){
-    add(w+10,w+45,"ready","drop","Get ready, quick breakfast","Early day: clothes and bag were packed last night");
-    add(450,480,"leave","leave","Leave home","07:30–08:00");
-  }else{
-    add(w+15,w+45,"sun","drop","Sunlight + breakfast","Curtains open; a 10-minute walk if you can");
-  }
-  const wk=workOf(d);
-  if(wk) add(toMin(wk[0]),toMin(wk[1]),"work","work","근로",`${wk[0]}–${wk[1]} · study tasks are fine during the shift`,"work");
-  if(t==="fri") add(720,780,"lunch","meal","Lunch","");
-  if(t==="free") add(750,810,"lunch","meal","Lunch","");
-  add(1080,1140,"dinner","meal","Dinner + a real break","Away from the desk");
-  add(b-30,b,"wind","wind","Wind down","Phone charges away from the bed · pack tomorrow's bag");
-  add(b,null,"sleep","moon","Lights out",`Wake ${wakeOf(addDays(d,1))} tomorrow`);
-  return R;
-}
-const RCOLOR={wake:"--dc",warm:"--rec",ready:"--rt",sun:"--dc",leave:"--rt",lunch:"--vr",dinner:"--vr",wind:"--rt",sleep:"--comp",work:"--work"};
-
-function timeline(d){
-  const out=[],dow=dayOf(d),day=BYDATE[d];
-  routineItems(d).forEach(r=>out.push({...r,id:d+"-r-"+r.key,c:RCOLOR[r.key]||"--rt",check:true}));
-  const examSubj=new Set(day?day[3].filter(x=>x[3]).map(x=>x[1]):[]);
-  if(!HOLI[d]&&!EXAMWEEK(d)&&CLS[dow]) CLS[dow].forEach(([t,k])=>{if(examSubj.has(k))return;const m=toMin(t);out.push({m,end:m+75,kind:"class",label:C[k][0]+" 수업",subj:k,c:C[k][1],icon:"cls",check:false})});
-  if(day) day[3].forEach((it,i)=>{const [t,k,txt,ex]=it;const m=startMin(t);out.push({m,end:endMin(t),kind:ex?"exam":"study",label:txt,subj:k,c:C[k][1],raw:t,id:d+"-"+i,check:true,moved:t==="Moved"})});
-  return out;
-}
-
 /* ================= state + local storage ================= */
 let S={}; // id -> [done 0|1, timestamp]
 const isDone=id=>!!(S[id]&&S[id][0]);
@@ -533,68 +486,12 @@ function loadLocal(){
 function setDone(id,v){S[id]=[v?1:0,Date.now()];saveLocal();renderAll();queueSync()}
 
 /* ================= helpers ================= */
-const DOWL=["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
 const clampDay=d=>d<D[0][0]?D[0][0]:d>RANGE_END?RANGE_END:d;
 function nextMs(){return MS.find(m=>diff(TODAY,m[0])>=0)}
 function nowMin(){try{const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Seoul",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(new Date()).split(":");return +p[0]*60+ +p[1]}catch(e){const n=new Date();return n.getHours()*60+n.getMinutes()}}
 function phase(){const m=nowMin();return m<300?"night":m<660?"morning":m<1020?"day":m<1260?"evening":"night"}
 function greet(){const m=nowMin();return m<300?"Still up":m<720?"Good morning":m<1080?"Good afternoon":m<1260?"Good evening":"Good night"}
 function ringSet(id,pid,cid,done,total){const p=total?Math.round(done/total*100):0;document.getElementById(id).setAttribute("stroke-dashoffset",(263.9*(1-p/100)).toFixed(1));document.getElementById(pid).textContent=p+"%";document.getElementById(cid).textContent=`${done}/${total}`}
-
-/* ================= TODAY ================= */
-let tDay=clampDay(TODAY), tDir="";
-function renderToday(){
-  const d=tDay, items=timeline(d), isT=d===TODAY, rel=diff(TODAY,d);
-  const hol=HOLI[d];
-  document.getElementById("hEb").textContent=`${+d.slice(5,7)}월 ${+d.slice(8)}일 · ${DOWL[dayOf(d)]}${hol?" · "+hol:""}`;
-  document.getElementById("hTitle").textContent=isT?`${greet()}, 민지`:rel===1?"Tomorrow":rel===-1?"Yesterday":rel>0?`In ${rel} days`:`${-rel} days ago`;
-  const day=BYDATE[d];
-  document.getElementById("hSub").textContent=day&&day[2]?day[2]:"";
-  const wk=workOf(d);
-  document.getElementById("hStats").innerHTML=`<span class="rp">${svg("sun")}Wake ${wakeOf(d)}</span>${wk?`<span class="rp w">${svg("work")}근로 ${wk[0]}–${wk[1]}</span>`:""}<span class="rp">${svg("moon")}Lights out ${fmt(bedOf(d))}</span>`;
-  document.getElementById("tPrev").disabled=d<=D[0][0];
-  document.getElementById("tNext").disabled=d>=RANGE_END;
-  document.getElementById("tNow").disabled=isT;
-  const checkable=items.filter(x=>x.check&&!x.moved);
-  const st=checkable.filter(x=>x.kind==="study"||x.kind==="exam");
-  const dn=checkable.filter(x=>isDone(x.id)).length;
-  document.getElementById("pFill").style.width=(checkable.length?dn/checkable.length*100:0)+"%";
-  document.getElementById("pCap").textContent=`${dn} of ${checkable.length} done`;
-  const timed=items.filter(x=>x.m!=null&&!x.moved).sort((a,b)=>a.m-b.m||(a.kind==="routine"?-1:1));
-  const nc=document.getElementById("nowCard");
-  if(isT){
-    const n=nowMin();
-    const cur=timed.filter(x=>x.end&&x.m<=n&&n<x.end).pop();
-    const nxt=timed.find(x=>x.m>n&&!(x.check&&isDone(x.id)));
-    nc.innerHTML=cur?`Now: <b>${esc(cur.label)}</b> · until ${fmt(cur.end)}`:nxt?`Next at ${fmt(nxt.m)}: <b>${esc(nxt.label)}</b>`:"Nothing else today.";
-  }else nc.innerHTML="";
-  // timeline
-  const any=items.filter(x=>x.m==null&&!x.moved), moved=items.filter(x=>x.moved);
-  const card=x=>{
-    const done=x.check&&isDone(x.id);
-    const ws=wk&&x.kind==="study"&&x.m>=toMin(wk[0])&&x.m<toMin(wk[1]);
-    const range=x.raw&&x.m==null?x.raw:x.m!=null?fmt(x.m)+(x.end?"–"+fmt(x.end):""):"";
-    const top=(x.subj?`<span class="chip" style="--c:var(${x.c})">${esc(C[x.subj][0])}</span>`:"")+(range?`<span class="tl-range">${esc(range)}</span>`:"")+(ws?`<span class="tag-work">during 근로</span>`:"")+(x.kind==="exam"?`<span class="tag-work" style="color:var(--ds);border-color:var(--ds)">EXAM</span>`:"");
-    const body=`<div class="tl-body"><div class="tl-top">${top}</div><div class="tl-txt">${esc(x.label)}</div>${x.sub?`<div class="tl-sub">${esc(x.sub)}</div>`:""}</div>`;
-    return x.check?`<label class="tl-card"><input type="checkbox" data-id="${x.id}" ${done?"checked":""} aria-label="${esc(x.label)}">${body}</label>`:`<div class="tl-card">${body}</div>`;
-  };
-  let h="";
-  if(any.length) h+=`<div class="anytime"><h3>Anytime today</h3>${any.map(x=>`<div class="tl k-${x.kind}${x.check&&isDone(x.id)?" done":""}" style="--c:var(${x.c});grid-template-columns:1fr">${card(x)}</div>`).join("")}</div>`;
-  const n=isT?nowMin():null; let nowPut=!isT;
-  timed.forEach(x=>{
-    if(!nowPut&&x.m>n){h+=`<div class="nowline"><b>${fmt(n)}</b><i></i><span></span></div>`;nowPut=true}
-    const cur=isT&&x.end&&x.m<=n&&n<x.end;
-    h+=`<div class="tl k-${x.kind}${x.check&&isDone(x.id)?" done":""}${cur?" cur":""}" style="--c:var(${x.c})"><div class="tl-t">${fmt(x.m)}</div><div class="tl-n"><span></span></div>${card(x)}</div>`;
-  });
-  if(!nowPut) h+=`<div class="nowline"><b>${fmt(n)}</b><i></i><span></span></div>`;
-  if(moved.length) h+=`<details class="moved"><summary>Moved to other days (${moved.length})</summary>${moved.map(x=>`<div class="tl k-study${isDone(x.id)?" done":""}" style="--c:var(${x.c});grid-template-columns:1fr">${card(x)}</div>`).join("")}</details>`;
-  if(st.length&&st.every(x=>isDone(x.id))) h+=`<div class="alldone">Every study block done for ${md(d)}. Nice.</div>`;
-  const tw=document.getElementById("timeline");
-  tw.innerHTML=h;
-  document.getElementById("tlCap").textContent=`${timed.length} blocks · ${md(d)}`;
-  if(tDir){tw.classList.remove("swap-f","swap-b");void tw.offsetWidth;tw.classList.add(tDir==="f"?"swap-f":"swap-b");tDir=""}
-}
-function shiftDay(n){const t=clampDay(addDays(tDay,n));if(t===tDay)return;tDir=n>0?"f":"b";tDay=t;renderToday()}
 
 /* ================= PLAN ================= */
 let hidePast=false;
@@ -607,12 +504,14 @@ function fixedLine(date){
 }
 function rhythmStrip(d){
   const wk=workOf(d),t=dayType(d);
-  return `<div class="rhy"><span class="rp">${svg("sun")}${wakeOf(d)}</span>${t!=="free"?`<span class="rp">${svg("leave")}${t==="fri"?"07:30":"09:30"}</span>`:""}${wk?`<span class="rp w">${svg("work")}근로 ${wk[0]}–${wk[1]}</span>`:""}<span class="rp">${svg("moon")}${fmt(bedOf(d))}</span></div>`;
+  const day=BYDATE[d],tot=day?dayTotal(day[3]):0;
+  if(!wk&&!tot)return"";
+  return `<div class="rhy">${tot?`<span class="rp">${svg("book")}≈ ${durTxt(tot)} of study</span>`:""}${wk?`<span class="rp w">${svg("work")}근로 ${wk[0]}–${wk[1]}</span>`:""}</div>`;
 }
 function orderIdx(date,items){const idx=items.map((it,i)=>i);if(RESORT[date])idx.sort((a,b)=>ORDER(items[a][0])-ORDER(items[b][0])||a-b);return idx}
 function itemHTML(date,it,i){
   const id=date+"-"+i;const [t,k,txt,ex]=it;const c=C[k];
-  return `<label class="item ${ex?"exam":""}" style="--c:var(${c[1]})"><input type="checkbox" data-id="${id}" ${isDone(id)?"checked":""}><span class="time">${esc(t)}</span><span class="what"><span class="chip">${esc(c[0])}</span>${esc(txt)}</span></label>`;
+  return `<label class="item ${ex?"exam":""}" style="--c:var(${c[1]})"><input type="checkbox" data-id="${id}" ${isDone(id)?"checked":""}><span class="time">${esc(showT(t))}</span><span class="what"><span class="chip">${esc(c[0])}</span>${esc(txt)}</span></label>`;
 }
 function renderMilestones(){
   const nx=(nextMs()||[])[0];
@@ -665,8 +564,8 @@ function renderCal(){
       const day=BYDATE[d];
       if(day){
         const items=day[3],idx=orderIdx(d,items),MAX=4;
-        const chips=idx.slice(0,MAX).map(i=>{const [t,k,txt,ex]=items[i];const id=d+"-"+i;const tm=/^\d/.test(t)?t.split("–")[0]:"";
-          return `<label class="cchip ${ex?"exam":""} ${isDone(id)?"done":""}" style="--c:var(${C[k][1]})" title="${esc(C[k][0]+" · "+t+" · "+txt)}"><input type="checkbox" data-id="${id}" ${isDone(id)?"checked":""}><span class="ct">${esc(txt)}</span>${tm?`<span class="tm">${tm}</span>`:""}</label>`}).join("");
+        const chips=idx.slice(0,MAX).map(i=>{const [t,k,txt,ex]=items[i];const id=d+"-"+i;const tm=durOf(t)!=null?showT(t):/^\d/.test(t)?t:"";
+          return `<label class="cchip ${ex?"exam":""} ${isDone(id)?"done":""}" style="--c:var(${C[k][1]})" title="${esc(C[k][0]+" · "+showT(t)+" · "+txt)}"><input type="checkbox" data-id="${id}" ${isDone(id)?"checked":""}><span class="ct">${esc(txt)}</span>${tm?`<span class="tm">${tm}</span>`:""}</label>`}).join("");
         const more=idx.length>MAX?`<button class="cmore" type="button" data-day="${d}">+${idx.length-MAX} more</button>`:"";
         w+=`<div class="citems" style="grid-column:${c+1};grid-row:${sp.length+2}">${chips}${more}</div>`;
       }
@@ -682,20 +581,19 @@ function renderCal(){
 function renderCalDetail(){
   const el=document.getElementById("calDetail"),day=BYDATE[selDay];
   const head=`<h3>${md(selDay)} ${DOW[dayOf(selDay)]}요일<span>${selDay===TODAY?"Today":""}${day&&day[1]?(selDay===TODAY?" · ":"")+esc(day[1]):""}</span></h3>${rhythmStrip(selDay)}`;
-  const open=`<div><button class="pbtn" type="button" data-open="${selDay}">Open in Today →</button></div>`;
-  if(!day){el.innerHTML=head+`<div class="empty">No study blocks planned. Routine only.</div>`+open;return}
+  if(!day){el.innerHTML=head+`<div class="empty">Nothing planned for this day.</div>`;return}
   const [date,,note,items]=day,fixed=fixedLine(date);
-  el.innerHTML=head+(fixed?`<div class="fixed">${esc(fixed)}</div>`:"")+(note?`<div class="note">${esc(note)}</div>`:"")+orderIdx(date,items).map(i=>itemHTML(date,items[i],i)).join("")+open;
+  el.innerHTML=head+(fixed?`<div class="fixed">${esc(fixed)}</div>`:"")+(note?`<div class="note">${esc(note)}</div>`:"")+orderIdx(date,items).map(i=>itemHTML(date,items[i],i)).join("");
 }
 function selectDay(d){selDay=d;if(d.slice(0,7)!==calMonth&&MONTHS.includes(d.slice(0,7)))calMonth=d.slice(0,7);renderCal()}
 
 /* ================= RHYTHM ================= */
 /* ================= render all ================= */
-function renderAll(){renderMilestones();renderToday();renderPlan();renderCal()}
+function renderAll(){renderMilestones();renderPlan();renderCal()}
 
 /* ================= tabs + transitions ================= */
-const TABS=["today","plan","cal"], TNAME={today:"Today",plan:"Exam plan",cal:"Calendar"};
-let tab="today", switching=false;
+const TABS=["plan","cal"], TNAME={plan:"Exam plan",cal:"Calendar"};
+let tab="plan", switching=false;
 const reduce=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 function moveBlob(){
   const b=document.querySelector(`.nav button[data-tab="${tab}"]`),blob=document.getElementById("navBlob");if(!b)return;
@@ -703,7 +601,7 @@ function moveBlob(){
   blob.style.transform=`translate(${b.offsetLeft}px,${b.offsetTop}px)`;
 }
 function setTab(t,opts={}){
-  if(!TABS.includes(t))t="today";
+  if(!TABS.includes(t))t="plan";
   const prev=tab; if(t===prev&&!opts.force)return;
   const back=TABS.indexOf(t)<TABS.indexOf(prev);
   tab=t;document.body.dataset.tab=t;
@@ -717,7 +615,6 @@ function setTab(t,opts={}){
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active","leaving","entering","back"));
     inn.classList.add("active");
     window.scrollTo(0,0);
-    if(t==="today"){tDay=clampDay(TODAY);renderToday()}
     if(opts.instant||reduce())return;
     inn.classList.add("entering");if(back)inn.classList.add("back");
     clearTimeout(inn._t);inn._t=setTimeout(()=>inn.classList.remove("entering","back"),1100);
@@ -733,15 +630,11 @@ window.addEventListener("resize",moveBlob);
   document.getElementById("stage").addEventListener("touchstart",e=>{if(e.target.closest(".milestones,.cal-grid,input,label,button,dialog")){x0=null;return}const p=e.touches[0];x0=p.clientX;y0=p.clientY;t0=Date.now()},{passive:true});
   document.getElementById("stage").addEventListener("touchend",e=>{if(x0==null)return;const p=e.changedTouches[0],dx=p.clientX-x0,dy=p.clientY-y0;x0=null;
     if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.8&&Date.now()-t0<600){
-      if(tab==="today"){shiftDay(dx<0?1:-1);return}
       const i=TABS.indexOf(tab)+(dx<0?1:-1);if(i>=0&&i<TABS.length)setTab(TABS[i])}},{passive:true});
 })();
 
 /* ================= events ================= */
 document.addEventListener("change",e=>{const id=e.target.dataset&&e.target.dataset.id;if(id)setDone(id,e.target.checked)});
-document.getElementById("tPrev").addEventListener("click",()=>shiftDay(-1));
-document.getElementById("tNext").addEventListener("click",()=>shiftDay(1));
-document.getElementById("tNow").addEventListener("click",()=>{tDir=tDay>TODAY?"b":"f";tDay=clampDay(TODAY);renderToday()});
 document.getElementById("jump").addEventListener("click",()=>{const el=document.getElementById("d-"+TODAY)||document.querySelector(".day:not(.past)");if(el)el.scrollIntoView({behavior:reduce()?"auto":"smooth",block:"start"})});
 document.getElementById("hidePast").addEventListener("click",()=>{hidePast=!hidePast;try{localStorage.setItem("hidePast",hidePast?"1":"0")}catch(e){}renderPlan()});
 document.getElementById("cPrev").addEventListener("click",()=>{const i=MONTHS.indexOf(calMonth);if(i>0){calMonth=MONTHS[i-1];renderCal()}});
@@ -750,8 +643,6 @@ document.getElementById("cToday").addEventListener("click",()=>selectDay(clampDa
 document.getElementById("calGrid").addEventListener("click",e=>{if(e.target.closest(".cchip"))return;const t=e.target.closest("[data-day]");if(!t)return;selectDay(t.dataset.day);
   if(matchMedia("(max-width:640px)").matches)document.getElementById("calDetail").scrollIntoView({behavior:reduce()?"auto":"smooth",block:"nearest"})});
 document.getElementById("calGrid").addEventListener("keydown",e=>{const t=e.target.closest(".cbg");if(t&&(e.key==="Enter"||e.key===" ")){e.preventDefault();selectDay(t.dataset.day)}});
-document.getElementById("calDetail").addEventListener("click",e=>{const b=e.target.closest("[data-open]");if(!b)return;setTab("today",{from:b});setTimeout(()=>{tDay=clampDay(b.dataset.open);renderToday()},260)});
-document.addEventListener("keydown",e=>{if(tab!=="today"||document.querySelector("dialog[open]")||/INPUT|TEXTAREA/.test(e.target.tagName)&&e.target.type!=="checkbox")return;if(e.key==="ArrowLeft")shiftDay(-1);if(e.key==="ArrowRight")shiftDay(1)});
 
 /* ================= GitHub Gist sync ================= */
 const SYNC_FILE="myplanner-sync.json";
@@ -861,17 +752,17 @@ document.getElementById("sideSync").addEventListener("click",openSync);
 document.getElementById("topSync").addEventListener("click",openSync);
 
 /* ================= boot ================= */
-function checkDate(){const t=seoulToday();if(t!==TODAY){const was=tDay===clampDay(TODAY);TODAY=t;if(was)tDay=clampDay(TODAY);renderAll()}}
-setInterval(()=>{checkDate();if(tab==="today"&&tDay===TODAY)renderToday()},60000);
+function checkDate(){const t=seoulToday();if(t!==TODAY){TODAY=t;renderAll()}}
+setInterval(checkDate,60000);
 
 (()=>{const m=/^#sync=([\w-]+)/.exec(location.hash);if(!m)return;
   try{const o=JSON.parse(b64d(m[1]));if(o.t){cfg={token:o.t,gist:o.g||null};saveCfg();setTimeout(()=>toast("Sync set up on this device"),400)}}catch(e){}
-  history.replaceState(null,"",location.pathname+"#today");
+  history.replaceState(null,"",location.pathname+"#plan");
 })();
 loadLocal();
-let startTab="today";
+let startTab="plan";
 try{const s=localStorage.getItem("tab");if(s==="list")startTab="plan";else if(TABS.includes(s))startTab=s}catch(e){}
-const H={"#today":"today","#widget":"today","#plan":"plan","#checklist":"plan","#list":"plan","#full":"plan","#cal":"cal","#calendar":"cal"};
+const H={"#today":"plan","#widget":"plan","#plan":"plan","#checklist":"plan","#list":"plan","#full":"plan","#cal":"cal","#calendar":"cal"};
 if(H[location.hash])startTab=H[location.hash];
 renderAll();
 tab=startTab;setTab(startTab,{force:true,instant:true,noHash:!location.hash});
